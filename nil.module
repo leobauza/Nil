@@ -1,0 +1,47 @@
+<?php
+/**
+ * @file
+ * Nil is a companion to the Zero theme.
+ */
+
+require_once drupal_get_path("module", "nil") . "/nil.inc";
+
+/**
+ * Implements hook_menu_link_alter().
+ */
+function nil_menu_link_alter(&$item) {
+  // Always set menu items to expanded when saved or added to menu.
+  if ($item['hidden'] === 0) {
+    ($item['expanded'] = 1);
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function nil_menu() {
+  $items['nil-views/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'get_view',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Get a view in json.
+ */
+function get_view($vname) {
+
+  $params = drupal_get_query_parameters();
+  $display = isset($params["display"]) ? $params["display"] : "default";
+  $items = isset($params["items"]) ? $params["items"] : 0;
+  $args = isset($params["args"]) ? $params["args"] : NULL;
+  $current_page = isset($params["current_page"]) ? $params["current_page"] : 0;
+
+  $view = new Nil\View($vname . "|" . $display, $args);
+
+  print json_encode($view->getView($items, $current_page));
+
+}

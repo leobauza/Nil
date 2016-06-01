@@ -1,0 +1,4 @@
+name = Nil
+description = A companion to the Zero theme.
+core = 7.x
+package = Custom
